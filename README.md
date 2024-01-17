@@ -1,3 +1,11 @@
+This is a starter for Next.js, Tailwind, LangChain, Clerk, Neon, Prisma, and maybe Builder.io
+
+## Prisma
+`npx prisma db push` - this effectively runs migrations on the Neon serverless postgres database
+`npx prisma format` - this will help define foreign keys and enforce best practices
+
+# Default Next.js Readme
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
