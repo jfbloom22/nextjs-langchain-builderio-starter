@@ -8,7 +8,7 @@ export default async function Home() {
   let href = "/new-user"
 
   if (userId) {
-    href = "/journal"
+    href = "/chat"
   }
 
   return (
