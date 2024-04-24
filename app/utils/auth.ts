@@ -1,15 +1,35 @@
-import {auth} from '@clerk/nextjs'
-import {prisma} from './db'
-export const getUserByClerkId = async () => {
-    const {userId} = auth()
-    if (!userId) {
-        throw new Error('No userId found')
-    }
-    const user = await prisma.user.findUnique({
-        where: {
-            clerkId: userId
-        }
-    })
-    return user
+import type { User } from '@clerk/nextjs/api'
+import { prisma } from './db'
+import { auth } from '@clerk/nextjs'
+
+export const getUserByClerkId = async (select = { id: true }) => {
+  const { userId } = auth()
+  const user = await prisma.user.findUniqueOrThrow({
+    where: {
+      clerkId: userId as string,
+    },
+    select,
+  })
+
+  return user
 }
 
+export const syncNewUser = async (clerkUser: User) => {
+  const existingUser = await prisma.user.findUnique({
+    where: {
+      clerkId: clerkUser.id,
+    },
+  })
+
+  if (!existingUser) {
+    const email = clerkUser.emailAddresses[0].emailAddress
+    // const { subscriptionId, customerId } = await createAndSubNewCustomer(email)
+
+    await prisma.user.create({
+      data: {
+        clerkId: clerkUser.id,
+        email,
+      },
+    })
+  }
+}
