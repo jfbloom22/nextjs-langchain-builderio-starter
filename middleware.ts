@@ -6,7 +6,7 @@ const corsOptions = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
 
-// Middleware to authenticate using Clerk and handle CORS
+// Middleware to authenticate using API key and handle CORS
 const middleware = async (req: NextRequest) => {
   const origin = req.headers.get('origin') ?? '';
   const isAllowedOrigin = allowedOrigins.includes(origin);
@@ -21,10 +21,10 @@ const middleware = async (req: NextRequest) => {
     return NextResponse.json({}, { headers: preflightHeaders });
   }
 
-  // Authenticate using Clerk
-  const authHeader = req.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return new Response(JSON.stringify({ message: "Authorization header missing or invalid" }), { status: 401 });
+  // Authenticate using API key
+  const apiKey = req.headers.get('x-api-key');
+  if (!apiKey || apiKey !== process.env.API_KEY) {
+    return new Response(JSON.stringify({ message: "API key missing or invalid" }), { status: 401 });
   }
 
   // Handle simple requests with CORS

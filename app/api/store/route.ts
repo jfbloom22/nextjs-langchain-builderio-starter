@@ -4,8 +4,9 @@ import { NextRequest, NextResponse } from "next/server"
 import { getUserByBearerToken } from "@/utils/auth"
 
 export const POST = async (req: NextRequest) => {
-    const user = await getUserByBearerToken(req)
-    if (!user) {
+    // const user = await getUserByBearerToken(req)
+    const userId = req.headers.get('x-api-key');
+    if (!userId) {
         return NextResponse.json({error: 'User not found'}, {status: 404})
     }
 
@@ -13,7 +14,7 @@ export const POST = async (req: NextRequest) => {
 
     const entry = await prisma.store.create({
         data: {
-            userId: user.id,
+            userId,
             name,
         }
     })
