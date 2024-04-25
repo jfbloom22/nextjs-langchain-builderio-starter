@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.29.2",
+    "@clerk/nextjs": "^5.0.2",
     "@neondatabase/serverless": "^0.6.1",
     "@prisma/adapter-neon": "^5.8.0",
     "@prisma/client": "^5.13.0",
