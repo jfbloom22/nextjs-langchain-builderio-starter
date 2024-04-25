@@ -49,7 +49,7 @@ export const getUserByBearerToken = async (req: NextRequest) => {
 
  const authHeader = req.headers.get('authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return new Response(JSON.stringify({ message: "Authorization header missing or invalid" }), { status: 401 });
+     throw new Error("Authorization header missing or invalid")
   }
 
   const bearer = authHeader.split(' ')[1];
@@ -60,14 +60,14 @@ export const getUserByBearerToken = async (req: NextRequest) => {
   });
 
   if (!response.ok) {
-    return Response.json({ message: "Authentication failed" }, { status: 401 });
+    throw new Error("Authentication failed")
   }
 
   const user = await response.json();
   if (!user.user_id) {
-    return Response.json({ message: "Failed getting Clerk user" }, { status: 401 });
+    throw new Error("Failed getting Clerk user")
   }
-
-  return user
+  const prismaUser = await getUserByClerkIdBearer(user.user_id)
+  return prismaUser
 }
 
