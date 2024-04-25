@@ -1,9 +1,9 @@
-import { getUserByClerkId } from "@/utils/auth"
+import { getUserByBearerToken } from "@/utils/auth"
 import { prisma } from "@/utils/db"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
-export const POST = async (request: Request) => {
-    const user = await getUserByClerkId()
+export const POST = async (request: NextRequest) => {
+    const user = await getUserByBearerToken(request)
     const {storeId, name, type, meta} = await request.json()
 
     if (!user) {

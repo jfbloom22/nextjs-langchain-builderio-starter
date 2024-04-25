@@ -1,7 +1,7 @@
 import { prisma } from "@/utils/db"
 import { revalidatePath } from "next/cache"
 import { NextRequest, NextResponse } from "next/server"
-import { getUserByBearerToken, getUserByClerkIdBearer } from "@/utils/auth"
+import { getUserByBearerToken } from "@/utils/auth"
 
 export const POST = async (req: NextRequest) => {
     const user = await getUserByBearerToken(req)

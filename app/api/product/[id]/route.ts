@@ -1,11 +1,11 @@
-import { getUserByClerkId } from "@/utils/auth";
+import { getUserByBearerToken, getUserByClerkId } from "@/utils/auth";
 import { prisma } from "@/utils/db";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const PATCH = async (request: Request, { params }: { params: { id: string, storeId: string } }) => {
+export const PATCH = async (request: NextRequest, { params }: { params: { id: string, storeId: string } }) => {
     const { id, storeId } = params;
     const { name } = await request.json();
-    const user  = await getUserByClerkId();
+    const user = await getUserByBearerToken(request)
     if (!user) {
         return new Response('Unauthorized', { status: 401 });
     }
