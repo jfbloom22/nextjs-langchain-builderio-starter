@@ -3,17 +3,15 @@ import { prisma } from "@/utils/db"
 import { NextRequest, NextResponse } from "next/server"
 
 export const POST = async (request: NextRequest) => {
-    // const user = await getUserByBearerToken(request)
-    const userId = request.headers.get('x-api-key');
-
+    const user = await getUserByBearerToken(request)
     const {storeId, name, type, meta} = await request.json()
 
-    if (!userId) {
+    if (!user) {
         return NextResponse.json({error: 'User not found'}, {status: 404})
     }
     const store = await prisma.store.findFirst({
         where: {
-            userId,
+            userId: user.id,
             id: storeId,
         },
     });

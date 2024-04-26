@@ -5,15 +5,13 @@ import { NextRequest, NextResponse } from "next/server";
 export const PATCH = async (request: NextRequest, { params }: { params: { id: string, storeId: string } }) => {
     const { id, storeId } = params;
     const { name } = await request.json();
-    // const user = await getUserByBearerToken(request)
-    const userId = request.headers.get('x-api-key');
-
-    if (!userId) {
+    const user = await getUserByBearerToken(request)
+    if (!user) {
         return new Response('Unauthorized', { status: 401 });
     }
     const store = await prisma.store.findFirst({
         where: {
-            userId,
+            userId: user.id,
             id: storeId,
         },
     });
