@@ -23,3 +23,9 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json({data: entry})
     
 }
+
+export const GET = async () => {
+    const stores = await prisma.store.findMany()
+    return NextResponse.json({data: stores})
+}
+
