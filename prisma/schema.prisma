@@ -48,7 +48,11 @@ model Product {
   id        String   @id @default(uuid())
   name      String
   type      String
-  meta      Json
+  meta      Json?
+  location  String?
+  quantity  Int      @default(0)
+  unit      String?
+  price     Float    @default(0)
   storeId   String
   store     Store    @relation(fields: [storeId], references: [id])
   createdAt DateTime @default(now())
