@@ -1,6 +1,7 @@
 This is a starter for Next.js, Tailwind, LangChain, Clerk, Neon, Prisma, and maybe Builder.io
 
 ## Prisma
+`npx prisma generate` - this will generate the Prisma client
 `npx prisma db push` - this effectively runs migrations on the Neon serverless postgres database
 `npx prisma format` - this will help define foreign keys and enforce best practices
 
@@ -42,3 +43,84 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+## GPT Auth
+Use the Actions GPT to help define the action
+https://chat.openai.com/g/g-TYEliDU6A-actionsgpt
+
+
+
+
+### Create Farm
+```
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Create Farm",
+    "description": "Create and name a new farm",
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://nextjs-langchain-builderio-starter.vercel.app"
+    }
+  ],
+  "paths": {
+    "/api/store": {
+      "post": {
+        "summary": "Create a new farm",
+        "operationId": "createFarm",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the farm"
+                  }
+                },
+                "required": ["name"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "Oauth2": ["name", "email"]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "Oauth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://singular-guppy-88.clerk.accounts.dev/oauth/authorize",
+            "tokenUrl": "https://singular-guppy-88.clerk.accounts.dev/oauth/token",
+            "scopes": {
+              "name": "Access to name",
+              "email": "Access to email"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
