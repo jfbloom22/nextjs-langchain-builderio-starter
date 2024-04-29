@@ -68,6 +68,15 @@ export const getUserByBearerToken = async (req: NextRequest) => {
     throw new Error("Failed getting Clerk user")
   }
   const prismaUser = await getUserByClerkIdBearer(user.user_id)
+  // handle prisma user not found by creating them
+  if (!prismaUser) {
+    return await prisma.user.create({
+      data: {
+        clerkId: user.user_id,
+        email: user.email,
+      },
+    })
+  }
   return prismaUser
 }
 
