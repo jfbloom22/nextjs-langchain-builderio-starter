@@ -1,0 +1,302 @@
+openapi: 3.1.0
+info:
+  title: Create Farm
+  description: Create and name a new farm
+  version: v1.0.0
+servers:
+  - url: https://gptdemo.simplejoysolutions.com
+paths:
+  /api/store:
+    post:
+      summary: Create a new farm
+      operationId: createFarm
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the farm
+              required:
+                - name
+      responses:
+        "200":
+          description: Success
+        "400":
+          description: Invalid input
+      security:
+        - OAuth2: []
+    get:
+      summary: Retrieve a list of farms
+      operationId: getFarms
+      responses:
+        "200":
+          description: A JSON array of farms
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        userId:
+                          type: string
+                          format: uuid
+  /api/store/{storeId}:
+    get:
+      summary: Retrieve a specific store and its products
+      operationId: getStoreWithProducts
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the store to retrieve
+      responses:
+        "200":
+          description: Store with its products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      store:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          name:
+                            type: string
+                          createdAt:
+                            type: string
+                            format: date-time
+                          updatedAt:
+                            type: string
+                            format: date-time
+                          userId:
+                            type: string
+                            format: uuid
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Name of the product, such as corn, cattle
+                            type:
+                              type: string
+                              description: harvested crop, non-harvested crop, or livestock
+                            meta:
+                              type: object
+                              additionalProperties: true
+                              description: any other details about the product, quantity, color, cost, location...
+                            location:
+                              type: string
+                              nullable: true
+                              description: Optional location of the product
+                            quantity:
+                              type: integer
+                              default: 0
+                              description: Quantity of the product, defaults to 0
+                            unit:
+                              type: string
+                              nullable: true
+                              description: Unit of measurement, optional
+                            price:
+                              type: number
+                              format: float
+                              default: 0
+                              description: Price of the product, defaults to 0
+                            storeId:
+                              type: string
+                              description: Identifier for the store the product is associated with
+    patch:
+      summary: Update a specific store
+      operationId: updateStore
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        "200":
+          description: Store updated successfully
+        "400":
+          description: Invalid input
+    delete:
+      summary: Delete a specific store
+      operationId: deleteStore
+      parameters:
+        - name: storeId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the store to delete
+      responses:
+        "204":
+          description: Store deleted successfully
+        "404":
+          description: Store not found
+  /api/product:
+    post:
+      summary: Create a new product
+      operationId: createProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the product, such as corn, cattle
+                type:
+                  type: string
+                  description: harvested crop, non-harvested crop, or livestock
+                meta:
+                  type: object
+                  additionalProperties: true
+                  description: any other details about the product, quantity, color, cost, location...
+                location:
+                  type: string
+                  nullable: true
+                  description: Optional location of the product
+                quantity:
+                  type: integer
+                  default: 0
+                  description: Quantity of the product, defaults to 0
+                unit:
+                  type: string
+                  nullable: true
+                  description: Unit of measurement, optional
+                price:
+                  type: number
+                  format: float
+                  default: 0
+                  description: Price of the product, defaults to 0
+                storeId:
+                  type: string
+                  description: Identifier for the store the product is associated with
+      responses:
+        "200":
+          description: Product created successfully
+        "400":
+          description: Invalid input
+  /api/product/{productId}:
+    patch:
+      summary: Update a specific product
+      operationId: updateProduct
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the product, such as corn, cattle
+                type:
+                  type: string
+                  description: harvested crop, non-harvested crop, or livestock
+                meta:
+                  type: object
+                  additionalProperties: true
+                  description: any other details about the product, quantity, color, cost, location...
+                location:
+                  type: string
+                  nullable: true
+                  description: Optional location of the product
+                quantity:
+                  type: integer
+                  default: 0
+                  description: Quantity of the product, defaults to 0
+                unit:
+                  type: string
+                  nullable: true
+                  description: Unit of measurement, optional
+                price:
+                  type: number
+                  format: float
+                  default: 0
+                  description: Price of the product, defaults to 0
+                storeId:
+                  type: string
+                  description: Identifier for the store the product is associated with
+      responses:
+        "200":
+          description: Product updated successfully
+        "400":
+          description: Invalid input
+    delete:
+      summary: Delete a specific product
+      operationId: deleteProduct
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the product to delete
+      responses:
+        "204":
+          description: Product deleted successfully
+        "404":
+          description: Product not found
+components:
+  schemas: {}
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts.google.com/o/oauth2/v2/auth
+          tokenUrl: https://oauth2.googleapis.com/token
+          scopes:
+            https://www.googleapis.com/auth/userinfo.email: Access to email
