@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/backend": "^1.1.1",
+    "@clerk/clerk-sdk-node": "^5.0.3",
     "@clerk/nextjs": "^5.0.2",
     "@neondatabase/serverless": "^0.6.1",
     "@prisma/adapter-neon": "^5.8.0",

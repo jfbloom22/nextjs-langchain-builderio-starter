@@ -2,6 +2,9 @@ import type { User } from '@clerk/nextjs/server'
 import { prisma } from './db'
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest } from 'next/server'
+import { createClerkClient, verifyToken } from '@clerk/backend';
+// import clerk from '@clerk/clerk-sdk-node'
+const clerk = createClerkClient({secretKey: process.env.CLERK_SECRET_KEY});
 
 export const getUserByClerkId = async (select = { id: true }) => {
   const { userId } = auth()
@@ -53,6 +56,15 @@ export const getUserByBearerToken = async (req: NextRequest) => {
   }
 
   const bearer = authHeader.split(' ')[1];
+
+  // verify the token.  I don't know who to configure as the issuer.... the issuer is clerk
+  const {result, error} = await verifyToken(bearer, {})
+  if (error) {
+    throw new Error("Failed verifying token")
+  }
+
+
+  
   const response = await fetch(`${process.env.CLERK_BASE_URL}/oauth/userinfo`, {
     headers: {
       Authorization: `Bearer ${bearer}`,
