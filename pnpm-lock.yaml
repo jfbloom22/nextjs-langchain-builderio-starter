@@ -5,12 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@clerk/backend':
-    specifier: ^1.1.1
-    version: 1.1.1(react-dom@18.2.0)(react@18.2.0)
-  '@clerk/clerk-sdk-node':
-    specifier: ^5.0.3
-    version: 5.0.3(react-dom@18.2.0)(react@18.2.0)
   '@clerk/nextjs':
     specifier: ^5.0.2
     version: 5.0.2(eslint@8.57.0)(next@14.0.4)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5)
@@ -26,6 +20,9 @@ dependencies:
   next:
     specifier: 14.0.4
     version: 14.0.4(react-dom@18.2.0)(react@18.2.0)
+  node-cache:
+    specifier: ^5.1.2
+    version: 5.1.2
   react:
     specifier: ^18
     version: 18.2.0
@@ -101,19 +98,6 @@ packages:
       - react-dom
     dev: false
 
-  /@clerk/backend@1.1.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-6r2SPtO5TB53OiGwexLP19LvVoUO+Nz7KlE4US1uposaT2X1+enRtA0LD9DwJnv1YJKxnPXVkwiuqYYlGysusw==}
-    engines: {node: '>=18.17.0'}
-    dependencies:
-      '@clerk/shared': 2.0.1(react-dom@18.2.0)(react@18.2.0)
-      cookie: 0.5.0
-      snakecase-keys: 5.4.4
-      tslib: 2.4.1
-    transitivePeerDependencies:
-      - react
-      - react-dom
-    dev: false
-
   /@clerk/clerk-react@5.0.1(eslint@8.57.0)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5):
     resolution: {integrity: sha512-JMwOtFFYGfEOI7Ux3Hg5QbuSYSUN1srf3rL6ORK6hgNuTbS1Cd24v6XZz3c7xfMo6yL70o870gXi20FecdeYYw==}
     engines: {node: '>=18.17.0'}
@@ -132,18 +116,6 @@ packages:
       - eslint-import-resolver-webpack
       - supports-color
       - typescript
-    dev: false
-
-  /@clerk/clerk-sdk-node@5.0.3(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-QBfzWCtU5Qslj6oFQKVsvzhYieSR3QdZkVi8kOF0RTpE73MrNHVx5aSKMB0gYkALsgHTW+6pzH/iInzGqKnnug==}
-    engines: {node: '>=18.17.0'}
-    dependencies:
-      '@clerk/backend': 1.1.1(react-dom@18.2.0)(react@18.2.0)
-      '@clerk/shared': 2.0.1(react-dom@18.2.0)(react@18.2.0)
-      tslib: 2.4.1
-    transitivePeerDependencies:
-      - react
-      - react-dom
     dev: false
 
   /@clerk/nextjs@5.0.2(eslint@8.57.0)(next@14.0.4)(react-dom@18.2.0)(react@18.2.0)(typescript@5.4.5):
@@ -172,27 +144,6 @@ packages:
 
   /@clerk/shared@2.0.0(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-HRbBGhAetOE6gSFd2jlLJTo+BFjuEr9lD1xigtBXdJUnmVngunciikQU2dZ4i/20X7B4VTrofhNpYi9MsCm7dw==}
-    engines: {node: '>=18.17.0'}
-    requiresBuild: true
-    peerDependencies:
-      react: '>=18'
-      react-dom: '>=18'
-    peerDependenciesMeta:
-      react:
-        optional: true
-      react-dom:
-        optional: true
-    dependencies:
-      glob-to-regexp: 0.4.1
-      js-cookie: 3.0.1
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
-      std-env: 3.7.0
-      swr: 2.2.0(react@18.2.0)
-    dev: false
-
-  /@clerk/shared@2.0.1(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-iRjvWCGVzcN5vi9O3+/bEbA22TegxlnHJJE1a6989OFeeXqSKFqmYwDrvM48umJrbvX5cMbKEgctSVXT2IOgCw==}
     engines: {node: '>=18.17.0'}
     requiresBuild: true
     peerDependencies:
@@ -952,6 +903,11 @@ packages:
 
   /client-only@0.0.1:
     resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
+    dev: false
+
+  /clone@2.1.2:
+    resolution: {integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==}
+    engines: {node: '>=0.8'}
     dev: false
 
   /color-convert@2.0.1:
@@ -2323,6 +2279,13 @@ packages:
     dependencies:
       lower-case: 2.0.2
       tslib: 2.6.2
+    dev: false
+
+  /node-cache@5.1.2:
+    resolution: {integrity: sha512-t1QzWwnk4sjLWaQAS8CHgOJ+RAfmHpxFWmc36IWTiWHQfs0w5JDMBS1b1ZxQteo0vVVuWJvIUKHDkkeK7vIGCg==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      clone: 2.1.2
     dev: false
 
   /node-releases@2.0.14:

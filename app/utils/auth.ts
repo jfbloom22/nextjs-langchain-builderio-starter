@@ -1,11 +1,11 @@
-import type { User } from '@clerk/nextjs/server'
 import { prisma } from './db'
 import { auth } from '@clerk/nextjs/server'
 import { NextRequest } from 'next/server'
-import { createClerkClient, verifyToken } from '@clerk/backend';
-// import clerk from '@clerk/clerk-sdk-node'
-const clerk = createClerkClient({secretKey: process.env.CLERK_SECRET_KEY});
+import { ClerkUser } from '@/types/types'
+import NodeCache from 'node-cache'
+import { User } from '@prisma/client'
 
+const tokenCache = new NodeCache({ stdTTL: 3600 })
 export const getUserByClerkId = async (select = { id: true }) => {
   const { userId } = auth()
   const user = await prisma.user.findUniqueOrThrow({
@@ -28,67 +28,71 @@ export const getUserByClerkIdBearer = async (id: string) => {
   return user
 }
 
-export const syncNewUser = async (clerkUser: User) => {
-  const existingUser = await prisma.user.findUnique({
-    where: {
-      clerkId: clerkUser.id,
-    },
-  })
+// export const syncNewUser = async (clerkUser: ClerkUser) => {
+//   const existingUser = await prisma.user.findUnique({
+//     where: {
+//       clerkId: clerkUser.id,
+//     },
+//   })
 
-  if (!existingUser) {
-    const email = clerkUser.emailAddresses[0].emailAddress
-    // const { subscriptionId, customerId } = await createAndSubNewCustomer(email)
+//   if (!existingUser) {
+//     const email = clerkUser.emailAddresses[0].emailAddress
+//     // const { subscriptionId, customerId } = await createAndSubNewCustomer(email)
 
-    await prisma.user.create({
-      data: {
-        clerkId: clerkUser.id,
-        email,
-      },
-    })
-  }
-}
+//     await prisma.user.create({
+//       data: {
+//         clerkId: clerkUser.id,
+//         email,
+//       },
+//     })
+//   }
+// }
 
 export const getUserByBearerToken = async (req: NextRequest) => {
-
- const authHeader = req.headers.get('authorization');
+  const authHeader = req.headers.get('authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-     throw new Error("Authorization header missing or invalid")
+    throw new Error("Authorization header missing or invalid");
   }
 
-  const bearer = authHeader.split(' ')[1];
-
-  // verify the token.  I don't know who to configure as the issuer.... the issuer is clerk
-  const {result, error} = await verifyToken(bearer, {})
-  if (error) {
-    throw new Error("Failed verifying token")
+  const bearerToken = authHeader.split(' ')[1];
+  const cachedUser = tokenCache.get<ClerkUser>(bearerToken);
+  if (cachedUser) {
+    return cachedUser;
   }
+  const clerkUser = await fetchClerkUser(bearerToken);
+  const user = await getOrCreateUser(clerkUser);
+  tokenCache.set(bearerToken, user);
+  return user;
+}
 
-
-  
-  const response = await fetch(`${process.env.CLERK_BASE_URL}/oauth/userinfo`, {
-    headers: {
-      Authorization: `Bearer ${bearer}`,
-    },
+async function fetchClerkUser(bearerToken: string): Promise<ClerkUser> {
+  const clerkBaseUrl = process.env.CLERK_BASE_URL;
+  const response = await fetch(`${clerkBaseUrl}/oauth/userinfo`, {
+    headers: { Authorization: `Bearer ${bearerToken}` },
   });
 
   if (!response.ok) {
-    throw new Error("Authentication failed")
+    throw new Error("Authentication failed with status: " + response.status);
   }
 
-  const user = await response.json();
-  if (!user.user_id) {
-    throw new Error("Failed getting Clerk user")
+  const userData = await response.json();
+  if (!userData.user_id) {
+    throw new Error("Failed getting Clerk user data");
   }
-  const prismaUser = await getUserByClerkIdBearer(user.user_id)
-  // handle prisma user not found by creating them
+
+  return userData;
+}
+
+async function getOrCreateUser(clerkUser: ClerkUser): Promise<User> {
+  const prismaUser = await getUserByClerkIdBearer(clerkUser.user_id);
   if (!prismaUser) {
     return await prisma.user.create({
       data: {
-        clerkId: user.user_id,
-        email: user.email,
+        clerkId: clerkUser.user_id,
+        email: clerkUser.email,
       },
-    })
+    });
   }
-  return prismaUser
+  return prismaUser;
 }
 
