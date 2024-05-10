@@ -174,7 +174,7 @@ paths:
           description: Store deleted successfully
         "404":
           description: Store not found
-  /api/product:
+  /api/products:
     post:
       summary: Create a new product
       operationId: createProduct
@@ -220,7 +220,7 @@ paths:
           description: Product created successfully
         "400":
           description: Invalid input
-  /api/product/{productId}:
+  /api/products/{productId}:
     patch:
       summary: Update a specific product
       operationId: updateProduct
