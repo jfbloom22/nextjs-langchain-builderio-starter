@@ -39,7 +39,7 @@ model Store {
   updatedAt DateTime  @updatedAt
   userId    String
   user      User      @relation(fields: [userId], references: [id])
-  product   Product[]
+  products  Product[]
 }
 
 // inventory represents things like Steers, corn, wheat, etc.

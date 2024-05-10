@@ -37,6 +37,9 @@ export const GET = async (request: NextRequest, { params }: { params: { id: stri
         where: {
             userId: user.id,
             id,
+        },
+        include: {
+            products: true,
         }
     })
     return NextResponse.json({data: {store, products}})

@@ -48,14 +48,14 @@ export const getUserByClerkIdBearer = async (id: string) => {
 //   }
 // }
 
-export const getUserByBearerToken = async (req: NextRequest) => {
+export const getUserByBearerToken = async (req: NextRequest): Promise<User> => {
   const authHeader = req.headers.get('authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     throw new Error("Authorization header missing or invalid");
   }
 
   const bearerToken = authHeader.split(' ')[1];
-  const cachedUser = tokenCache.get<ClerkUser>(bearerToken);
+  const cachedUser = tokenCache.get<User>(bearerToken);
   if (cachedUser) {
     return cachedUser;
   }
