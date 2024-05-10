@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 export const POST = async (request: NextRequest) => {
     const user = await getUserByBearerToken(request)
-    const {storeId, name, type, meta} = await request.json()
+    const {storeId,  name, meta, location, quantity, unit, price, type} = await request.json()
 
     if (!user) {
         return NextResponse.json({error: 'User not found'}, {status: 404})
@@ -24,7 +24,11 @@ export const POST = async (request: NextRequest) => {
             storeId,
             name,
             type,
-            meta
+            meta,
+            location,
+            quantity,
+            unit,
+            price,
         }
     })
 

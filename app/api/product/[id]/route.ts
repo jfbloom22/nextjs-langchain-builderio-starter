@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const PATCH = async (request: NextRequest, { params }: { params: { id: string, storeId: string } }) => {
     const { id, storeId } = params;
-    const { name, meta, location, quantity, unit, price } = await request.json();
+    const { name, meta, location, quantity, unit, price, type } = await request.json();
     const user = await getUserByBearerToken(request)
     if (!user) {
         return new Response('Unauthorized', { status: 401 });
@@ -26,6 +26,7 @@ export const PATCH = async (request: NextRequest, { params }: { params: { id: st
         data: {
             name,
             meta,
+            type,
             location,
             quantity,
             unit,
